@@ -360,13 +360,13 @@ select {
   display: grid;
   grid-template-columns: minmax(9.5rem, 11rem) minmax(0, 1fr) 6.25rem;
   align-items: center;
-  gap: var(--user-spacing);
+  gap: 4px;
 }
 
 .bar-label {
   overflow: visible;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 800;
   text-overflow: clip;
   white-space: nowrap;
@@ -633,13 +633,13 @@ select {
 
 .service-plan-row {
   display: grid;
-  grid-template-columns: 6.35rem 5.4rem minmax(0, 1fr) 7rem;
+  grid-template-columns: 7rem 5.5rem minmax(10rem, 1fr) 7rem;
   column-gap: 8px;
   row-gap: 2px;
   align-items: center;
   min-width: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   line-height: 1.25;
   white-space: nowrap;
   overflow: visible;
@@ -715,7 +715,7 @@ select {
 
 .mileage-plan-row {
   display: grid;
-  grid-template-columns: 5.9rem 6.6rem minmax(0, 1fr) minmax(5rem, 6.5rem) 5.75rem;
+  grid-template-columns: 5.9rem 6.6rem minmax(8rem, 1fr) 5.75rem;
   align-items: center;
   gap: var(--user-spacing);
   min-height: 42px;
@@ -723,11 +723,17 @@ select {
 }
 
 .mileage-plan-row:last-child { border-bottom: 0; }
-.mileage-plan-row b:first-child { color: var(--teal); font-size: 0.72rem; }
+.mileage-plan-row b:first-child { color: var(--teal); font-size: inherit; }
 .mileage-plan-row b:nth-child(2), .mileage-plan-row span { min-width: 0; overflow-wrap: anywhere; }
 .mileage-plan-row span { color: var(--muted); }
 .mileage-service { min-width: 0; overflow-wrap: anywhere; }
 .mileage-plan-row strong { text-align: right; white-space: nowrap; }
+.mileage-plan-row span {
+  min-width: 8rem;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
 
 .service-plan-row b,
 .service-plan-row span {
@@ -749,7 +755,7 @@ select {
 
 .service-car {
   padding-right: 4px;
-  overflow: visible;
+  overflow: hidden;
   text-overflow: clip;
 }
 
@@ -768,7 +774,16 @@ select {
 
 @media (min-width: 680px) {
   .app-shell {
+    width: min(100%, 1120px);
+    padding-right: 28px;
+    padding-left: 28px;
     padding-top: 34px;
+  }
+
+  .chart-panel,
+  .vehicle-list {
+    padding-right: 28px;
+    padding-left: 28px;
   }
 
   .controls {
@@ -812,7 +827,7 @@ select {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.7rem;
+    font-size: 0.78rem;
   }
 
   .bar-value {
@@ -839,10 +854,10 @@ select {
 
   .month-record-row {
     grid-template-columns: 2.6rem 6.1rem minmax(0, 1fr) 6.25rem;
-    column-gap: 4px;
+    column-gap: 3px;
     row-gap: 0;
     align-items: center;
-    font-size: 0.72rem;
+    font-size: 0.76rem;
   }
 
   .month-record-row > span {
@@ -866,11 +881,12 @@ select {
   }
 
   .service-plan-row {
-    grid-template-columns: 5.25rem 4.7rem minmax(6.5rem, 1fr) 4.8rem;
+    grid-template-columns: 5.1rem 4.4rem minmax(6.2rem, 1fr) 4.6rem;
     column-gap: 6px;
     row-gap: 2px;
     align-items: center;
-    font-size: 0.62rem;
+    min-height: 38px;
+    font-size: 0.76rem;
     white-space: nowrap;
     overflow: hidden;
   }
@@ -904,7 +920,8 @@ select {
   .mileage-plan-row {
     grid-template-columns: 4rem 5.8rem minmax(0, 1fr) 4.8rem;
     gap: 6px;
-    font-size: 0.68rem;
+    min-height: 42px;
+    font-size: 0.76rem;
     overflow: hidden;
   }
 
@@ -915,9 +932,37 @@ select {
   }
 
   .mileage-plan-row strong {
+    min-width: 4.8rem;
     text-align: right;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* A narrow desktop window should keep desktop columns instead of using the
+   touch-phone layout just because its viewport is temporarily small. */
+@media (min-width: 680px) and (hover: hover) and (pointer: fine) {
+  .app-shell {
+    width: min(100%, 1120px);
+  }
+
+  .service-plan-row {
+    grid-template-columns: 7rem 5.5rem minmax(10rem, 1fr) 7rem;
+    column-gap: 8px;
+    min-height: 0;
+    font-size: 0.84rem;
+  }
+
+  .mileage-plan-row {
+    grid-template-columns: 5.9rem 6.6rem minmax(8rem, 1fr) 5.75rem;
+    gap: var(--user-spacing);
+    min-height: 42px;
+    font-size: 1rem;
+  }
+
+  .progress-main {
+    grid-template-columns: minmax(7.2rem, 0.9fr) minmax(6.5rem, 0.8fr) minmax(0, 1.6fr);
+    gap: 8px;
   }
 }

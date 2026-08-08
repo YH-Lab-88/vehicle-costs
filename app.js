@@ -575,7 +575,9 @@
         status: clean(row[0]),
         pickup: clean(row[1]),
         item: clean(row[2]),
-        detail: clean(row[3]),
+        // Keep every column after 事项: the sheet may contain blank spacer
+        // columns before or after the 细节 column.
+        detail: clean(row.slice(3).filter((cell) => clean(cell)).join(" ")),
       }))
       .filter((row) => row.status || row.pickup || row.item || row.detail);
   }

@@ -591,6 +591,22 @@
     return "progress-other";
   }
 
+  function progressDetailHtml(detail) {
+    const text = clean(detail);
+    if (!text) return "";
+    const markers = [...text.matchAll(/【[^】]*】/g)];
+    if (!markers.length) return `<div>${escapeHtml(text)}</div>`;
+
+    const lines = [];
+    if (markers[0].index > 0) lines.push(text.slice(0, markers[0].index).trim());
+    markers.forEach((marker, index) => {
+      const start = marker.index;
+      const end = index + 1 < markers.length ? markers[index + 1].index : text.length;
+      lines.push(text.slice(start, end).trim());
+    });
+    return lines.filter(Boolean).map((line) => `<div>${escapeHtml(line)}</div>`).join("");
+  }
+
   function renderProgress(items) {
     el.detailTitle.textContent = "进度";
     el.progressLegend?.classList.remove("hidden");
@@ -605,7 +621,7 @@
     items.forEach((item) => {
       const row = document.createElement("article");
       row.className = `progress-row ${progressStatusClass(item.status)}`;
-      row.innerHTML = `<div class="progress-main"><strong>${escapeHtml(item.status || "未填写状态")}</strong><span>${escapeHtml(item.pickup)}</span><p>${escapeHtml(item.item)}</p></div>${item.detail ? `<div class="progress-detail">${escapeHtml(item.detail)}</div>` : ""}`;
+      row.innerHTML = `<div class="progress-main"><strong>${escapeHtml(item.status || "未填写状态")}</strong><span>${escapeHtml(item.pickup)}</span><p>${escapeHtml(item.item)}</p></div>${item.detail ? `<div class="progress-detail">${progressDetailHtml(item.detail)}</div>` : ""}`;
       list.appendChild(row);
     });
     el.vehicleList.appendChild(list);

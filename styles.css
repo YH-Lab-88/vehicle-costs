@@ -267,6 +267,10 @@ select {
   overflow-wrap: anywhere;
 }
 
+.progress-detail div + div {
+  margin-top: 4px;
+}
+
 .progress-date { background: #f6c928; }
 .progress-counter { background: #f4d3d3; }
 .progress-departed { background: #a9cce9; }

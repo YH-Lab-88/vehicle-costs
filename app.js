@@ -74,6 +74,7 @@
     chartPanel: document.querySelector(".chart-panel"),
     vehicleList: document.querySelector("#vehicleList"),
     listHint: document.querySelector("#listHint"),
+    progressLegend: document.querySelector("#progressLegend"),
   };
 
   function sheetUrl(gid) {
@@ -1055,6 +1056,8 @@
     const items = isProgressView ? state.progress : isQnaView ? state.qna : isServiceView ? (isMileageView ? state.mileagePlans : filteredServicePlans()) : filteredExpenses();
     const total = isServiceView || isQnaView || isProgressView ? 0 : items.reduce((sum, expense) => sum + expense.amount, 0);
     const vehicles = new Set(items.map((item) => item.vehicleKey || item.key));
+
+    el.progressLegend?.classList.toggle("hidden", !isProgressView);
 
     el.totalLabel.textContent = isProgressView ? "进度" : isQnaView ? "问题" : isServiceView ? "预计车辆" : "总花费";
     el.recordLabel.textContent = isProgressView ? "记录" : isQnaView ? "答案" : isServiceView ? "月份" : "记录";

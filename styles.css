@@ -221,6 +221,14 @@ select {
   gap: 8px;
 }
 
+.progress-legend {
+  margin: -4px 0 12px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .progress-row {
   display: block;
   padding: 11px 12px;

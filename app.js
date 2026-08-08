@@ -705,6 +705,15 @@
     return clean(value).replace(/^(Toyota|Nissan|Perodua|Honda|Hyundai|Proton)\s+/i, "");
   }
 
+  function serviceDateHtml(value) {
+    const text = clean(value);
+    const parts = parseServiceDate(text);
+    const compact = parts
+      ? `${String(parts.day).padStart(2, "0")}/${String(parts.month).padStart(2, "0")}`
+      : text;
+    return `<span class="service-date-full">${escapeHtml(text)}</span><span class="service-date-compact">${escapeHtml(compact)}</span>`;
+  }
+
   function formatExpenseDate(expense) {
     return `${expense.year}年${String(expense.month).padStart(2, "0")}月`;
   }
@@ -859,9 +868,9 @@
 
     data.forEach((item) => {
       const row = document.createElement("div");
-      row.className = "bar-row";
+      row.className = `bar-row${state.view === "vehicle" ? " vehicle-bar-row" : ""}`;
       const labelHtml = state.view === "vehicle"
-        ? `<span class="bar-label"><span class="bar-plate">${item.label}</span><span class="bar-car">${item.car || ""}</span></span>`
+        ? `<span class="bar-label" title="${escapeHtml(`${item.label} ${item.car || ""}`.trim())}"><span class="bar-plate">${item.label}</span><span class="bar-car">${shortCarName(item.car) || ""}</span></span>`
         : `<span class="bar-label" title="${item.label}">${item.label}</span>`;
       row.innerHTML = `
         ${labelHtml}
@@ -1022,8 +1031,8 @@
             <div class="service-plan-row">
               <b class="service-plate">${plan.plate}</b>
               <span class="service-branch">${plan.branch?.toUpperCase() || ""}</span>
-              <span class="service-car">${shortCarName(plan.car) || ""}</span>
-              <span class="service-date">${plan.lastService || ""}</span>
+              <span class="service-car">${escapeHtml(plan.car || "")}</span>
+              <span class="service-date">${serviceDateHtml(plan.lastService)}</span>
             </div>
           `;
         })
@@ -1059,7 +1068,7 @@
       const row = document.createElement("div");
       row.className = "mileage-plan-row";
       const mileageLabel = plan.mileage === null ? "未给信息" : plan.mileage.toLocaleString("en-MY");
-      row.innerHTML = `<b>${plan.branch.toUpperCase()}</b><b>${plan.plate}</b><span>${shortCarName(plan.car) || ""}</span><strong>${mileageLabel}</strong>`;
+      row.innerHTML = `<b>${plan.branch.toUpperCase()}</b><b>${plan.plate}</b><span>${escapeHtml(plan.car || "")}</span><strong>${mileageLabel}</strong>`;
       list.appendChild(row);
     });
     el.vehicleList.appendChild(list);

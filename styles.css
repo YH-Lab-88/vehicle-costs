@@ -377,12 +377,14 @@ select {
   grid-template-columns: 6.1rem minmax(0, 1fr);
   gap: 4px;
   align-items: center;
+  overflow: hidden;
 }
 
 .bar-plate,
 .bar-car {
   min-width: 0;
-  overflow: visible;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -421,6 +423,25 @@ select {
   font-size: 0.82rem;
   font-weight: 900;
   text-align: right;
+}
+
+/* Vehicle names need the full middle column on small screens. */
+.vehicle-bar-row {
+  grid-template-columns: minmax(8rem, 1fr) 6.25rem;
+}
+
+.vehicle-bar-row .bar-track {
+  display: none;
+}
+
+.vehicle-bar-row .bar-value {
+  grid-column: 2;
+}
+
+.vehicle-bar-row .bar-label,
+.vehicle-bar-row .bar-car {
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .money {
@@ -711,8 +732,7 @@ select {
 .service-plan-row b,
 .service-plan-row span {
   min-width: 0;
-  overflow: visible;
-  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .service-plan-row b,
@@ -729,12 +749,16 @@ select {
 
 .service-car {
   padding-right: 4px;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .service-date {
   font-variant-numeric: tabular-nums;
   text-align: left;
 }
+
+.service-date-compact { display: none; }
 
 .empty-state {
   padding: 24px 8px;
@@ -769,19 +793,24 @@ select {
     gap: var(--user-spacing);
   }
 
+  .vehicle-bar-row {
+    grid-template-columns: minmax(8rem, 1fr) 6.25rem;
+    gap: 8px;
+  }
+
   .progress-row {
     padding: 9px 6px;
     font-size: 0.72rem;
   }
 
   .progress-main {
-    grid-template-columns: minmax(5.9rem, 0.95fr) minmax(5.2rem, 0.85fr) minmax(0, 1.35fr);
-    gap: 5px;
+    grid-template-columns: minmax(5.5rem, 0.8fr) minmax(4.7rem, 0.65fr) minmax(0, 1.8fr);
+    gap: 4px;
   }
 
   .bar-label {
-    overflow: visible;
-    text-overflow: clip;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 0.7rem;
   }
@@ -796,6 +825,11 @@ select {
   .chart-panel,
   .vehicle-list {
     padding: 14px 12px;
+  }
+
+  .progress-main {
+    grid-template-columns: minmax(5.5rem, 0.8fr) minmax(4.7rem, 0.65fr) minmax(0, 1.8fr);
+    gap: 4px;
   }
 
   .bar-row {
@@ -832,13 +866,13 @@ select {
   }
 
   .service-plan-row {
-    grid-template-columns: 5.7rem 4.75rem minmax(0, 1fr) 6.15rem;
+    grid-template-columns: 5.25rem 4.7rem minmax(6.5rem, 1fr) 4.8rem;
     column-gap: 6px;
     row-gap: 2px;
     align-items: center;
-    font-size: 0.66rem;
+    font-size: 0.62rem;
     white-space: nowrap;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .service-plate,
@@ -858,15 +892,32 @@ select {
     font-size: 1em;
   }
 
+  .service-car {
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  .service-date-full { display: none; }
+  .service-date-compact { display: inline; }
+
   .mileage-plan-row {
-    grid-template-columns: 4rem 4.8rem minmax(3.4rem, 1fr) minmax(3.6rem, 4.4rem) 4.25rem;
-    gap: 2px;
+    grid-template-columns: 4rem 5.8rem minmax(0, 1fr) 4.8rem;
+    gap: 6px;
     font-size: 0.68rem;
+    overflow: hidden;
+  }
+
+  .mileage-plan-row span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .mileage-plan-row strong {
     text-align: right;
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

@@ -593,6 +593,7 @@
 
   function renderProgress(items) {
     el.detailTitle.textContent = "进度";
+    el.progressLegend?.classList.remove("hidden");
     el.listHint.textContent = `${items.length} 条`;
     el.vehicleList.innerHTML = "";
     if (!items.length) {

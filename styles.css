@@ -16,6 +16,7 @@ form { display:grid; gap:15px; }
 label { display:grid; gap:7px; color:var(--muted); font-size:.83rem; font-weight:750; }
 input { width:100%; min-height:48px; padding:0 13px; border:1px solid var(--line); border-radius:11px; color:var(--ink); background:#fbfdfb; }
 input[type="date"] { display:block; width:100%; min-width:0; text-align:left; appearance:none; -webkit-appearance:none; }
+input[type="date"]::-webkit-date-and-time-value { text-align:left; }
 input:focus { outline:3px solid rgba(35,130,119,.18); border-color:var(--teal); }
 .money-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .primary-button { min-height:52px; margin-top:4px; border:0; border-radius:12px; color:#fff; background:var(--deep); font-weight:800; cursor:pointer; }

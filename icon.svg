@@ -1,5 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="96" fill="#12312b"/>
-  <path fill="#f7f5ef" d="M104 294h304v88h-42a38 38 0 0 1-74 0h-72a38 38 0 0 1-74 0h-42v-88Zm39-96c8-26 24-44 54-44h118c27 0 46 15 57 44l22 60H121l22-60Zm54-8c-10 0-17 5-21 17l-10 29h180l-11-29c-5-12-12-17-23-17H197Z"/>
-  <path fill="#d6a33a" d="M160 114h192v30H160zM134 418h244v26H134z"/>
+  <text x="256" y="365" fill="#f7f5ef" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif" font-size="270" font-weight="700">账</text>
 </svg>

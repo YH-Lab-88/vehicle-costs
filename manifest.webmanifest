@@ -1,8 +1,8 @@
 {
-  "name": "车辆维修花费",
-  "short_name": "维修花费",
+  "name": "公账 RM2026",
+  "short_name": "账 RM2026",
   "id": "./",
-  "start_url": "./index.html?v=24",
+  "start_url": "./index.html?v=rm2026-2",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

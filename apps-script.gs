@@ -5,6 +5,14 @@ function getBalance(sheet) {
   return Number(sheet.getRange('F1002').getValue()) || 0;
 }
 
+function getLastRecordRow(sheet) {
+  const values = sheet.getRange(1, 1, sheet.getMaxRows(), 5).getValues();
+  for (let index = values.length - 1; index >= 1; index -= 1) {
+    if (values[index].some((value) => value !== '' && value !== null)) return index + 1;
+  }
+  return 1;
+}
+
 function doGet() {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const balance = getBalance(sheet);
@@ -17,23 +25,24 @@ function doPost(e) {
   if (!sheet) throw new Error('RM2026 not found');
   if (data.action === 'delete') {
     const rowToDelete = Number(data.row);
-    if (!Number.isInteger(rowToDelete) || rowToDelete < 2 || rowToDelete > sheet.getLastRow()) throw new Error('Invalid row');
-    sheet.deleteRow(rowToDelete);
-    const lastRowAfterDelete = sheet.getLastRow();
-    for (let row = 3; row <= lastRowAfterDelete; row += 1) sheet.getRange(row, 6).setFormula(`=F${row - 1}+D${row}-E${row}`);
+    const lastRecordRow = getLastRecordRow(sheet);
+    if (!Number.isInteger(rowToDelete) || rowToDelete < 2 || rowToDelete > lastRecordRow) throw new Error('Invalid record row');
+    if (rowToDelete < lastRecordRow) {
+      const rowsBelow = sheet.getRange(rowToDelete + 1, 1, lastRecordRow - rowToDelete, 5).getValues();
+      sheet.getRange(rowToDelete, 1, rowsBelow.length, 5).setValues(rowsBelow);
+    }
+    sheet.getRange(lastRecordRow, 1, 1, 5).clearContent();
     SpreadsheetApp.flush();
     const balance = getBalance(sheet);
     return ContentService.createTextOutput(JSON.stringify({ ok: true, balance: balance })).setMimeType(ContentService.MimeType.JSON);
   }
   if (!data.date || !data.item || (!data.dt && !data.kt)) throw new Error('Missing required fields');
-  const lastRow = sheet.getLastRow();
+  const lastRow = getLastRecordRow(sheet);
   const dt = Number(data.dt) || 0;
   const kt = Number(data.kt) || 0;
-  sheet.appendRow([new Date(data.date), data.item, data.other || '', dt || '', kt || '']);
-  const newRow = sheet.getLastRow();
+  const newRow = lastRow + 1;
+  sheet.getRange(newRow, 1, 1, 5).setValues([[new Date(data.date), data.item, data.other || '', dt || '', kt || '']]);
   sheet.getRange(newRow, 1).setNumberFormat('dd/MM/yyyy');
-  const previousBalance = newRow > 2 ? `F${newRow - 1}` : '0';
-  sheet.getRange(newRow, 6).setFormula(`=${previousBalance}+D${newRow}-E${newRow}`);
   SpreadsheetApp.flush();
   const balance = getBalance(sheet);
   return ContentService.createTextOutput(JSON.stringify({ ok: true, balance: balance, row: newRow })).setMimeType(ContentService.MimeType.JSON);

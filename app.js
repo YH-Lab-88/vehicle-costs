@@ -75,7 +75,8 @@
       const response = await fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "delete", row: row.row }) });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error("delete failed");
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows.filter((_, rowIndex) => rowIndex !== index)));
+      const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index).map((entry) => entry.row > row.row ? { ...entry, row: entry.row - 1 } : entry);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRows));
       renderRecent();
       if (typeof result.balance === "number") renderBalance(result.balance);
       setStatus("记录已删除。", "success");

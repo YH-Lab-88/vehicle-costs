@@ -19,7 +19,7 @@ input[type="text"]#date { display:block; width:100%; min-width:0; height:48px; t
 .date-control { position:relative; display:flex; align-items:center; }
 .date-control #date { padding-right:52px; }
 .calendar-button { position:absolute; right:7px; z-index:2; width:38px; height:38px; padding:0; border:0; border-radius:9px; background:#eaf8f4; cursor:pointer; }
-.date-picker-native { position:absolute; right:7px; z-index:1; width:38px; height:38px; opacity:0; pointer-events:none; }
+.date-picker-native { position:absolute; right:7px; z-index:3; width:38px; height:38px; opacity:0; pointer-events:auto; cursor:pointer; }
 input:focus { outline:3px solid rgba(35,130,119,.18); border-color:var(--teal); }
 .money-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .money-field { padding:12px; border-radius:14px; }

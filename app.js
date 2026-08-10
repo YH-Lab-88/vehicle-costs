@@ -7,13 +7,22 @@
   const recentList = document.querySelector("#recentList");
   const balanceAmount = document.querySelector("#balanceAmount");
   const date = document.querySelector("#date");
-  date.value = new Date().toISOString().slice(0, 10);
+  function displayDate(dateObject) {
+    const day = String(dateObject.getDate()).padStart(2, "0");
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    return `${day}/${month}/${dateObject.getFullYear()}`;
+  }
+  function isoDate(displayValue) {
+    const match = String(displayValue).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    return match ? `${match[3]}-${match[2].padStart(2, "0")}-${match[1].padStart(2, "0")}` : "";
+  }
+  date.value = displayDate(new Date());
 
   function money(value) { return value ? `RM ${Number(value).toFixed(2)}` : "—"; }
   function getRecent() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch (_) { return []; } }
   function renderRecent() {
     const rows = getRecent();
-    recentList.innerHTML = rows.length ? rows.map((row) => `<article class="recent-row"><div><strong>${escapeHtml(row.item)}</strong><small>${row.date}${row.other ? ` · ${escapeHtml(row.other)}` : ""}</small></div><span>${row.dt ? `-${money(row.dt)}` : `+${money(row.kt)}`}</span></article>`).join("") : '<p class="empty">还没有本机记录</p>';
+    recentList.innerHTML = rows.length ? rows.map((row, index) => `<article class="recent-row"><div><strong>${escapeHtml(row.item)}</strong><small>${row.displayDate || row.date}${row.other ? ` · ${escapeHtml(row.other)}` : ""}</small></div><div class="recent-actions"><span>${row.dt ? `+${money(row.dt)}` : `-${money(row.kt)}`}</span>${row.row ? `<button class="delete-button" type="button" data-index="${index}">删除</button>` : ""}</div></article>`).join("") : '<p class="empty">还没有本机记录</p>';
   }
   function renderBalance(value) { balanceAmount.textContent = value == null ? "RM —" : `RM ${Number(value).toFixed(2)}`; }
   function escapeHtml(value) { return String(value || "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char])); }
@@ -32,7 +41,9 @@
     const data = Object.fromEntries(new FormData(form).entries());
     if (!data.dt && !data.kt) return setStatus("请填写进账或出账。", "error");
     if (data.dt && data.kt) return setStatus("一笔记录请只填写进账或出账其中一项。", "error");
-    const payload = { date: data.date, item: data.item.trim(), other: data.other.trim(), dt: data.dt || "", kt: data.kt || "" };
+    const normalizedDate = isoDate(data.date);
+    if (!normalizedDate) return setStatus("日期请使用 日/月/年，例如 10/08/2026。", "error");
+    const payload = { date: normalizedDate, displayDate: data.date, item: data.item.trim(), other: data.other.trim(), dt: data.dt || "", kt: data.kt || "" };
     setStatus(APPS_SCRIPT_URL ? "正在保存…" : "界面已完成，但尚未连接 Google Sheet。", "pending");
     if (APPS_SCRIPT_URL) {
       try {
@@ -40,15 +51,36 @@
         if (!response.ok) throw new Error("save failed");
         const result = await response.json();
         if (typeof result.balance === "number") renderBalance(result.balance);
+        payload.row = result.row;
         setStatus("已保存到 RM2026。", "success");
       } catch (_) { return setStatus("保存失败，请检查连接设置。", "error"); }
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify([payload, ...getRecent()].slice(0, 8)));
     renderRecent();
     form.reset();
-    date.value = new Date().toISOString().slice(0, 10);
+    date.value = displayDate(new Date());
   });
   document.querySelector("#clearButton").addEventListener("click", () => { localStorage.removeItem(STORAGE_KEY); renderRecent(); });
+  recentList.addEventListener("click", async (event) => {
+    const button = event.target.closest(".delete-button");
+    if (!button) return;
+    const rows = getRecent();
+    const index = Number(button.dataset.index);
+    const row = rows[index];
+    if (!row || !row.row || !confirm("确定要删除这笔记录吗？Google Sheet 的对应记录也会被删除。")) return;
+    if (!APPS_SCRIPT_URL) return setStatus("尚未连接 Google Sheet。", "error");
+    button.disabled = true;
+    setStatus("正在删除…", "pending");
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "delete", row: row.row }) });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error("delete failed");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows.filter((_, rowIndex) => rowIndex !== index)));
+      renderRecent();
+      if (typeof result.balance === "number") renderBalance(result.balance);
+      setStatus("记录已删除。", "success");
+    } catch (_) { button.disabled = false; setStatus("删除失败，请检查连接。", "error"); }
+  });
   renderRecent();
   loadBalance();
 })();

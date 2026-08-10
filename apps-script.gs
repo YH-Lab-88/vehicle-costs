@@ -12,6 +12,16 @@ function doPost(e) {
   const data = JSON.parse(e.postData.contents || '{}');
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) throw new Error('RM2026 not found');
+  if (data.action === 'delete') {
+    const rowToDelete = Number(data.row);
+    if (!Number.isInteger(rowToDelete) || rowToDelete < 2 || rowToDelete > sheet.getLastRow()) throw new Error('Invalid row');
+    sheet.deleteRow(rowToDelete);
+    const lastRowAfterDelete = sheet.getLastRow();
+    for (let row = 3; row <= lastRowAfterDelete; row += 1) sheet.getRange(row, 6).setFormula(`=F${row - 1}+D${row}-E${row}`);
+    SpreadsheetApp.flush();
+    const balance = lastRowAfterDelete > 1 ? Number(sheet.getRange(lastRowAfterDelete, 6).getValue()) || 0 : 0;
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, balance: balance })).setMimeType(ContentService.MimeType.JSON);
+  }
   if (!data.date || !data.item || (!data.dt && !data.kt)) throw new Error('Missing required fields');
   const lastRow = sheet.getLastRow();
   const dt = Number(data.dt) || 0;
@@ -23,5 +33,5 @@ function doPost(e) {
   sheet.getRange(newRow, 6).setFormula(`=${previousBalance}+D${newRow}-E${newRow}`);
   SpreadsheetApp.flush();
   const balance = Number(sheet.getRange(newRow, 6).getValue()) || 0;
-  return ContentService.createTextOutput(JSON.stringify({ ok: true, balance: balance })).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify({ ok: true, balance: balance, row: newRow })).setMimeType(ContentService.MimeType.JSON);
 }

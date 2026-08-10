@@ -25,13 +25,13 @@
 
       <section class="card">
         <form id="entryForm">
-          <label>日期 <input id="date" name="date" type="date" required /></label>
+          <label>日期 <input id="date" name="date" type="text" inputmode="numeric" placeholder="日/月/年" autocomplete="off" required /></label>
           <label>项目 <input id="item" name="item" type="text" placeholder="例如：晚餐、维修" required /></label>
           <label>备注 <input id="other" name="other" type="text" placeholder="可不填" /></label>
 
           <div class="money-grid">
-            <label>进账（DT）<input id="dt" name="dt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
-            <label>出账（KT）<input id="kt" name="kt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
+            <label class="money-field outgoing-field">出账（KT）<input id="kt" name="kt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
+            <label class="money-field incoming-field">进账（DT）<input id="dt" name="dt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
           </div>
 
           <button class="primary-button" type="submit">保存到 RM2026</button>

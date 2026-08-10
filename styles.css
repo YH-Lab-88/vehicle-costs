@@ -7,6 +7,7 @@ button,input { font:inherit; font-size:16px; }
 .eyebrow { margin:0 0 6px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.12em; }
 h1 { margin:0; font-size:2.35rem; line-height:1; }
 .subtitle { margin:10px 0 0; color:var(--muted); font-size:.92rem; }
+.sheet-link { display:inline-flex; align-items:center; min-height:38px; margin-top:14px; padding:0 13px; border:1px solid #c7e7df; border-radius:10px; color:var(--teal); background:#eaf8f4; font-size:.82rem; font-weight:800; text-decoration:none; }
 .status-dot { width:12px; height:12px; margin:8px 4px 0 0; border-radius:50%; background:var(--teal); box-shadow:0 0 0 6px #d1e8df; }
 .balance-box { min-width:112px; padding:10px 12px; border:1px solid #c4ddd3; border-radius:14px; background:#eaf5ef; text-align:right; }
 .balance-box span { display:block; color:var(--muted); font-size:.7rem; font-weight:800; }

@@ -55,7 +55,7 @@
         setStatus("已保存到 RM2026。", "success");
       } catch (_) { return setStatus("保存失败，请检查连接设置。", "error"); }
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([payload, ...getRecent()].slice(0, 8)));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([payload, ...getRecent()].slice(0, 50)));
     renderRecent();
     form.reset();
     date.value = displayDate(new Date());

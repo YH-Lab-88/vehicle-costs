@@ -25,7 +25,13 @@
 
       <section class="card">
         <form id="entryForm">
-          <label>日期 <input id="date" name="date" type="text" inputmode="numeric" placeholder="日/月/年" autocomplete="off" required /></label>
+          <label>日期
+            <div class="date-control">
+              <input id="date" name="date" type="text" inputmode="numeric" placeholder="日/月/年" autocomplete="off" required />
+              <button id="calendarButton" class="calendar-button" type="button" aria-label="选择日期">📅</button>
+              <input id="datePicker" class="date-picker-native" type="date" tabindex="-1" aria-hidden="true" />
+            </div>
+          </label>
           <label>项目 <input id="item" name="item" type="text" placeholder="例如：晚餐、维修" required /></label>
           <label>备注 <input id="other" name="other" type="text" placeholder="可不填" /></label>
 

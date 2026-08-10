@@ -7,6 +7,7 @@
   const recentList = document.querySelector("#recentList");
   const balanceAmount = document.querySelector("#balanceAmount");
   const date = document.querySelector("#date");
+  const datePicker = document.querySelector("#datePicker");
   function displayDate(dateObject) {
     const day = String(dateObject.getDate()).padStart(2, "0");
     const month = String(dateObject.getMonth() + 1).padStart(2, "0");
@@ -17,6 +18,14 @@
     return match ? `${match[3]}-${match[2].padStart(2, "0")}-${match[1].padStart(2, "0")}` : "";
   }
   date.value = displayDate(new Date());
+  datePicker.value = new Date().toISOString().slice(0, 10);
+  document.querySelector("#calendarButton").addEventListener("click", () => {
+    if (typeof datePicker.showPicker === "function") datePicker.showPicker();
+    else datePicker.click();
+  });
+  datePicker.addEventListener("change", () => {
+    if (datePicker.value) date.value = displayDate(new Date(`${datePicker.value}T00:00:00`));
+  });
 
   function money(value) { return value ? `RM ${Number(value).toFixed(2)}` : "—"; }
   function getRecent() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch (_) { return []; } }
@@ -59,6 +68,7 @@
     renderRecent();
     form.reset();
     date.value = displayDate(new Date());
+    datePicker.value = new Date().toISOString().slice(0, 10);
   });
   document.querySelector("#clearButton").addEventListener("click", () => { localStorage.removeItem(STORAGE_KEY); renderRecent(); });
   recentList.addEventListener("click", async (event) => {

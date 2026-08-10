@@ -2,56 +2,96 @@
 <html lang="zh-Hans">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#173b34" />
-    <title>公帐 RM2026</title>
-    <link rel="apple-touch-icon" href="./icon-account.svg" />
-    <link rel="manifest" href="./manifest.webmanifest?v=2" />
-    <link rel="stylesheet" href="./styles.css?v=rm2026-2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#12312b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="维修花费" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>车辆维修花费</title>
+    <link rel="apple-touch-icon" href="./icon.svg?v=60" />
+    <link rel="manifest" href="./manifest.webmanifest?v=60" />
+    <link rel="stylesheet" href="./styles.css?v=phone-progress-row-1" />
   </head>
   <body>
-    <main class="app-shell">
+    <main class="app-shell" id="appShell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">RM2026</p>
-          <h1>公帐记录</h1>
-          <p class="subtitle">新增一笔资料，直接写入 Google Sheet</p>
-          <a class="sheet-link" href="https://docs.google.com/spreadsheets/d/1T6XxVZ3L6Wp0RmGe93ix931OaqVpBBklGRaI57TdTB4/edit?gid=1095480988#gid=1095480988" target="_blank" rel="noopener">打开 Google Sheet</a>
+          <p class="eyebrow">Google Sheet 实时数据</p>
+          <h1>车辆维修花费</h1>
         </div>
-        <div class="balance-box" aria-label="Balance">
-          <span>Balance</span>
-          <strong id="balanceAmount">RM —</strong>
+        <div class="top-actions">
+          <button class="icon-button" id="refreshButton" type="button" title="刷新数据" aria-label="刷新数据">↻</button>
         </div>
       </header>
 
-      <section class="card">
-        <form id="entryForm">
-          <label>日期
-            <div class="date-control">
-              <input id="date" name="date" type="text" inputmode="numeric" placeholder="日/月/年" autocomplete="off" required />
-              <button id="calendarButton" class="calendar-button" type="button" aria-label="选择日期">📅</button>
-              <input id="datePicker" class="date-picker-native" type="date" tabindex="-1" aria-hidden="true" />
-            </div>
-          </label>
-          <label>项目 <input id="item" name="item" type="text" placeholder="例如：晚餐、维修" required /></label>
-          <label>备注 <input id="other" name="other" type="text" placeholder="可不填" /></label>
-
-          <div class="money-grid">
-            <label class="money-field outgoing-field">出账（KT）<input id="kt" name="kt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
-            <label class="money-field incoming-field">进账（DT）<input id="dt" name="dt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" /></label>
-          </div>
-
-          <button class="primary-button" type="submit">保存到 RM2026</button>
-          <p class="form-hint">进账和出账至少填写一项。</p>
-          <p id="status" class="status" role="status" aria-live="polite"></p>
-        </form>
+      <section class="summary-strip" aria-label="总览">
+        <div class="metric">
+          <span id="totalLabel">总花费</span>
+          <strong id="totalAmount">0</strong>
+        </div>
+        <div class="metric">
+          <span>车辆</span>
+          <strong id="vehicleCount">0</strong>
+        </div>
+        <div class="metric">
+          <span id="recordLabel">记录</span>
+          <strong id="recordCount">0</strong>
+        </div>
       </section>
 
-      <section class="card guide">
-        <div class="section-title"><h2>最近记录</h2><button id="clearButton" class="text-button" type="button">清除本机记录</button></div>
-        <div id="recentList" class="recent-list"><p class="empty">还没有本机记录</p></div>
+      <section class="controls" aria-label="筛选">
+        <label>
+          年份
+          <select id="yearFilter"></select>
+        </label>
+        <label>
+          月份
+          <select id="monthFilter"></select>
+        </label>
+        <label>
+          类别
+          <select id="branchFilter"></select>
+        </label>
+        <label>
+          车辆
+          <select id="vehicleFilter"></select>
+        </label>
+      </section>
+
+      <nav class="tabs" aria-label="查看方式">
+        <div class="tab-row tab-row-primary">
+        <button class="tab active" type="button" data-view="month">按月</button>
+        <button class="tab" type="button" data-view="year">按年</button>
+        <button class="tab" type="button" data-view="vehicle">按车辆</button>
+        <button class="tab" type="button" data-view="qna">QnA</button>
+        </div>
+        <div class="tab-row tab-row-secondary">
+        <button class="tab" type="button" data-view="service-month">保养月份</button>
+        <button class="tab" type="button" data-view="service-mileage">保养里数</button>
+        <button class="tab" type="button" data-view="progress">保养进度</button>
+        </div>
+      </nav>
+
+      <p class="status" id="statusText">正在读取表格...</p>
+
+      <section class="chart-panel" aria-label="费用图表">
+        <div class="chart-heading">
+          <h2 id="chartTitle">费用走势</h2>
+          <span id="lastUpdated"></span>
+        </div>
+        <div class="bar-chart" id="barChart"></div>
+      </section>
+
+      <section class="vehicle-list" aria-label="车辆明细">
+        <div class="section-heading">
+          <h2 id="detailTitle">车辆明细</h2>
+          <span id="listHint"></span>
+        </div>
+        <p class="progress-legend" id="progressLegend">1. 等柜台确认 · 2. 日期已确认 · 3. 车已开走 · 4. 已经完成</p>
+        <div id="vehicleList"></div>
       </section>
     </main>
-    <script src="./app.js?v=rm2026-1"></script>
+
+    <script src="./app.js?v=progress-points-1"></script>
   </body>
 </html>

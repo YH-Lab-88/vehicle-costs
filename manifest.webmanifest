@@ -1,6 +1,6 @@
 {
-  "name": "车辆维修花费",
-  "short_name": "维修花费",
+  "name": "VAN车",
+  "short_name": "VAN车",
   "id": "./",
   "start_url": "./index.html?v=62",
   "scope": "./",

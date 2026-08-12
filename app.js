@@ -45,7 +45,7 @@
     expenses: [],
     servicePlans: [],
     vehicles: new Map(),
-    view: "month",
+    view: "progress",
     mileagePlans: [],
     qna: [],
     progress: [],

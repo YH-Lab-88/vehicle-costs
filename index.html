@@ -10,7 +10,7 @@
     <title>车辆维修花费</title>
     <link rel="apple-touch-icon" href="./icon.svg?v=60" />
     <link rel="manifest" href="./manifest.webmanifest?v=60" />
-    <link rel="stylesheet" href="./styles.css?v=local-vehicle-layout-1" />
+    <link rel="stylesheet" href="./styles.css?v=local-tabs-swap-1" />
   </head>
   <body>
     <main class="app-shell" id="appShell">
@@ -60,15 +60,15 @@
 
       <nav class="tabs" aria-label="查看方式">
         <div class="tab-row tab-row-primary">
-        <button class="tab active" type="button" data-view="month">按月</button>
+        <button class="tab active" type="button" data-view="progress">保养进度</button>
+        <button class="tab" type="button" data-view="service-month">保养月份</button>
+        <button class="tab" type="button" data-view="service-mileage">保养里数</button>
+        </div>
+        <div class="tab-row tab-row-secondary">
+        <button class="tab" type="button" data-view="month">按月</button>
         <button class="tab" type="button" data-view="year">按年</button>
         <button class="tab" type="button" data-view="vehicle">按车辆</button>
         <button class="tab" type="button" data-view="qna">QnA</button>
-        </div>
-        <div class="tab-row tab-row-secondary">
-        <button class="tab" type="button" data-view="service-month">保养月份</button>
-        <button class="tab" type="button" data-view="service-mileage">保养里数</button>
-        <button class="tab" type="button" data-view="progress">保养进度</button>
         </div>
       </nav>
 
@@ -92,6 +92,6 @@
       </section>
     </main>
 
-    <script src="./app.js?v=progress-points-1"></script>
+    <script src="./app.js?v=default-progress-1"></script>
   </body>
 </html>

@@ -197,7 +197,11 @@ select {
 }
 
 .tab-row-secondary {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.tab-row-primary .tab:first-child {
+  grid-column: 1;
 }
 
 .tab {
@@ -801,7 +805,7 @@ select {
   }
 
   .tab-row-primary { grid-template-columns: repeat(4, 1fr); }
-  .tab-row-secondary { grid-template-columns: repeat(3, 1fr); }
+  .tab-row-secondary { grid-template-columns: repeat(4, 1fr); }
 
   .bar-row {
     grid-template-columns: 9.5rem minmax(0, 1fr) 6.25rem;

@@ -2,17 +2,17 @@
   "name": "车辆维修花费",
   "short_name": "维修花费",
   "id": "./",
-  "start_url": "./index.html?v=24",
+  "start_url": "./index.html?v=62",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f7f5ef",
-  "theme_color": "#12312b",
+  "theme_color": "#a4000b",
   "icons": [
     {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "./vehicle-logo.png?v=62",
+      "sizes": "1254x1254",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

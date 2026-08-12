@@ -49,7 +49,7 @@
     mileagePlans: [],
     qna: [],
     progress: [],
-    filters: { year: "all", month: "all", branch: "all", vehicle: "all" },
+    filters: { year: String(new Date().getFullYear()), month: "all", branch: "all", vehicle: "all" },
     lastLoaded: null,
   };
 
@@ -773,6 +773,8 @@
 
   function refreshFilters() {
     const years = [...new Set([...state.expenses.map((expense) => expense.year), ...state.servicePlans.map((plan) => plan.year)])].sort((a, b) => b - a);
+    const currentYear = String(new Date().getFullYear());
+    if (!years.includes(Number(currentYear))) state.filters.year = "all";
     const branches = ["Viva", "Pandan", "Perkasa"];
     const vehicles = [...state.vehicles.values()]
       .filter((vehicle) => state.filters.branch === "all" || vehicle.branch === state.filters.branch)

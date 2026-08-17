@@ -2,7 +2,7 @@
   "name": "VAN车",
   "short_name": "VAN车",
   "id": "./",
-  "start_url": "./index.html?v=62",
+  "start_url": "./index.html?v=63",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -10,7 +10,7 @@
   "theme_color": "#a4000b",
   "icons": [
     {
-      "src": "./vehicle-logo.png?v=62",
+      "src": "./vehicle-logo.png?v=63",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any maskable"

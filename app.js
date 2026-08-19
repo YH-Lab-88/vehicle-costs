@@ -521,7 +521,6 @@
 
   function parseMileagePlans(csv, source) {
     const rows = parseCsv(csv).filter((row) => row.some((cell) => clean(cell)));
-    const branch = branchFromSource(source.name);
     const plans = new Map();
     const numericMileage = (value) => {
       const text = clean(value).replace(/,/g, "");
@@ -530,23 +529,26 @@
       return match ? Number(match[0]) : null;
     };
 
-    rows.forEach((row, rowIndex) => {
-      const plateIndex = row.findIndex((cell) => isVehiclePlate(cell));
-      if (plateIndex < 0) return;
-      const plate = displayPlate(row[plateIndex]);
+    // Main26 all is the authoritative mileage table:
+    // A=category, B=plate, E=car, G=remaining mileage.
+    const headerIndex = rows.findIndex((row) => row.some((cell) => /^车牌$|^plat$/i.test(clean(cell))));
+    const dataRows = headerIndex >= 0 ? rows.slice(headerIndex + 1) : rows;
+
+    dataRows.forEach((row, rowIndex) => {
+      const plate = displayPlate(row[1]);
+      if (!isVehiclePlate(plate)) return;
       if (/^LAST\b/i.test(clean(plate)) || /^(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+20\d{2}$/i.test(clean(plate))) return;
       const key = normalizePlate(plate);
       const vehicle = state.vehicles.get(key) || {};
-      // VIVA/PANDAN use a three-row vehicle block: plate in A of the
-      // first row, remaining mileage in B of the third row.
-      const mileageRow = rows[rowIndex + 2] || [];
-      const mileage = numericMileage(mileageRow[1]);
+      const branch = normalizeBranch(row[0]) || vehicle.branch || "";
+      const car = clean(row[4]) || vehicle.car || "";
+      const mileage = numericMileage(row[6]);
       const plan = {
         id: `${source.gid}-${key}-${rowIndex}`,
         key,
         plate,
         branch,
-        car: vehicle.car || "",
+        car,
         mileage,
         source: source.name,
       };
@@ -1127,7 +1129,7 @@
       const [overviewCsv, servicePlanCsv, vivaCsv, pandanCsv, qnaCsv, progressCsv, ...sourceCsvs] = await Promise.all([loadCsv(OVERVIEW_GID), loadCsv(SERVICE_PLAN_SOURCE.gid), loadCsv(SOURCES[0].gid), loadCsv(SOURCES[1].gid), loadCsv(QNA_SOURCE.gid), loadCsv(PROGRESS_SOURCE.gid), ...SOURCES.map((source) => loadCsv(source.gid))]);
       parseOverview(overviewCsv);
       state.servicePlans = parseServicePlans(servicePlanCsv, SERVICE_PLAN_SOURCE);
-      state.mileagePlans = [...parseMileagePlans(vivaCsv, SOURCES[0]), ...parseMileagePlans(pandanCsv, SOURCES[1])];
+      state.mileagePlans = parseMileagePlans(servicePlanCsv, SERVICE_PLAN_SOURCE);
       state.qna = parseQna(qnaCsv);
       state.progress = parseProgress(progressCsv);
       state.expenses = sourceCsvs.flatMap((csv, index) => parseExpenseSheet(csv, SOURCES[index]));

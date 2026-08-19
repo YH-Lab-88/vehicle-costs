@@ -46,6 +46,7 @@
     servicePlans: [],
     vehicles: new Map(),
     view: "progress",
+    financialVisible: false,
     mileagePlans: [],
     qna: [],
     progress: [],
@@ -56,6 +57,11 @@
   const el = {
     appShell: document.querySelector("#appShell"),
     refreshButton: document.querySelector("#refreshButton"),
+    financeButton: document.querySelector("#financeButton"),
+    financeDialog: document.querySelector("#financeDialog"),
+    financeForm: document.querySelector("#financeForm"),
+    financePassword: document.querySelector("#financePassword"),
+    financeError: document.querySelector("#financeError"),
     totalLabel: document.querySelector("#totalLabel"),
     totalAmount: document.querySelector("#totalAmount"),
     vehicleCount: document.querySelector("#vehicleCount"),
@@ -136,7 +142,7 @@
   }
 
   function normalizePlate(value) {
-    const raw = clean(value).toUpperCase();
+    const raw = clean(value).replace(/\.pdf$/i, "").trim().toUpperCase();
     const parts = raw.split(/\s+/).filter(Boolean);
     if (/^\d+$/.test(parts[0] || "") && /^[A-Z]+$/.test(parts[1] || "")) {
       if (parts.length === 3 && parts[1].length === 2 && parts[2].length === 1 && /^[A-Z]$/.test(parts[2])) {
@@ -148,7 +154,7 @@
   }
 
   function displayPlate(value) {
-    const raw = clean(value).toUpperCase();
+    const raw = clean(value).replace(/\.pdf$/i, "").trim().toUpperCase();
     const parts = raw.split(/\s+/).filter(Boolean);
     if (/^\d+$/.test(parts[0] || "") && /^[A-Z]+$/.test(parts[1] || "")) {
       if (parts.length === 3 && parts[1].length === 2 && parts[2].length === 1 && /^[A-Z]$/.test(parts[2])) {
@@ -696,8 +702,12 @@
     return Math.round(value).toLocaleString("en-MY");
   }
 
+  function visibleMoney(value) {
+    return state.financialVisible ? formatMoney(value) : "••••••";
+  }
+
   function moneyHtml(value) {
-    const amount = Number(value) > 0 ? Math.round(value).toLocaleString("en-MY") : "";
+    const amount = Number(value) > 0 ? visibleMoney(value) : "";
     return `<span class="money"><span>${amount}</span></span>`;
   }
 
@@ -1089,7 +1099,7 @@
 
     el.totalLabel.textContent = isProgressView ? "进度" : isQnaView ? "问题" : isServiceView ? "预计车辆" : "总花费";
     el.recordLabel.textContent = isProgressView ? "记录" : isQnaView ? "答案" : isServiceView ? "月份" : "记录";
-    el.totalAmount.textContent = isProgressView ? `${items.length.toLocaleString("en-MY")} 条` : isQnaView ? `${items.length.toLocaleString("en-MY")} 条` : isServiceView ? `${items.length.toLocaleString("en-MY")} 辆` : formatMoney(total);
+    el.totalAmount.textContent = isProgressView ? `${items.length.toLocaleString("en-MY")} 条` : isQnaView ? `${items.length.toLocaleString("en-MY")} 条` : isServiceView ? `${items.length.toLocaleString("en-MY")} 辆` : visibleMoney(total);
     el.vehicleCount.textContent = vehicles.size.toLocaleString("en-MY");
     el.recordCount.textContent = isProgressView || isQnaView ? "—" : isServiceView ? (isMileageView ? "—" : new Set(items.map((item) => item.monthKey)).size.toLocaleString("en-MY")) : items.length.toLocaleString("en-MY");
     el.lastUpdated.textContent = state.lastLoaded ? `更新 ${state.lastLoaded}` : "";
@@ -1136,6 +1146,33 @@
   }
 
   el.refreshButton.addEventListener("click", loadData);
+  el.financeButton.addEventListener("click", () => {
+    if (state.financialVisible) {
+      state.financialVisible = false;
+      el.financeButton.textContent = "财政";
+      el.financeButton.setAttribute("aria-label", "显示财政金额");
+      render();
+      return;
+    }
+    el.financeError.textContent = "";
+    el.financePassword.value = "";
+    el.financeDialog.showModal();
+    window.setTimeout(() => el.financePassword.focus(), 50);
+  });
+  el.financeForm.addEventListener("submit", (event) => {
+    if (event.submitter?.value !== "unlock") return;
+    event.preventDefault();
+    if (el.financePassword.value === "3388333") {
+      state.financialVisible = true;
+      el.financeButton.textContent = "隐藏金额";
+      el.financeButton.setAttribute("aria-label", "隐藏金额");
+      el.financeDialog.close();
+      render();
+    } else {
+      el.financeError.textContent = "密码不正确";
+      el.financePassword.select();
+    }
+  });
   el.yearFilter.addEventListener("change", (event) => {
     state.filters.year = event.target.value;
     render();

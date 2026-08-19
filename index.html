@@ -21,9 +21,23 @@
           <h1>VAN车</h1>
         </div>
         <div class="top-actions">
+          <button class="finance-button" id="financeButton" type="button" title="显示财政金额" aria-label="显示财政金额">财政</button>
           <button class="icon-button" id="refreshButton" type="button" title="刷新数据" aria-label="刷新数据">↻</button>
         </div>
       </header>
+
+      <dialog class="finance-dialog" id="financeDialog">
+        <form method="dialog" id="financeForm">
+          <h2>财政</h2>
+          <p>请输入密码后显示金额</p>
+          <input id="financePassword" type="password" inputmode="numeric" autocomplete="off" placeholder="密码" aria-label="财政密码" />
+          <div class="finance-dialog-actions">
+            <button type="submit" value="cancel">取消</button>
+            <button class="primary" type="submit" value="unlock">打开</button>
+          </div>
+          <small class="finance-error" id="financeError"></small>
+        </form>
+      </dialog>
 
       <section class="summary-strip" aria-label="总览">
         <div class="metric">

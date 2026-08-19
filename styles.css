@@ -776,6 +776,8 @@ select {
   gap: var(--user-spacing);
   min-height: 42px;
   border-bottom: 1px solid var(--line);
+  width: 100%;
+  min-width: 0;
 }
 
 .mileage-plan-row:last-child { border-bottom: 0; }
@@ -783,7 +785,13 @@ select {
 .mileage-plan-row b:nth-child(2), .mileage-plan-row span { min-width: 0; overflow-wrap: anywhere; }
 .mileage-plan-row span { color: var(--muted); }
 .mileage-service { min-width: 0; overflow-wrap: anywhere; }
-.mileage-plan-row strong { text-align: right; white-space: nowrap; }
+.mileage-plan-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: clip;
+}
 .mileage-plan-row span {
   min-width: 0;
   overflow: hidden;
@@ -989,7 +997,7 @@ select {
   }
 
   .mileage-plan-row strong {
-    min-width: 4.8rem;
+    min-width: 0;
     text-align: right;
     white-space: nowrap;
     overflow: visible;

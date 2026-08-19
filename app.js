@@ -644,6 +644,22 @@
       .replace(/'/g, "&#039;");
   }
 
+  function qnaTextHtml(value) {
+    const text = clean(value);
+    const urlMatch = text.match(/https?:\/\/[^\s<>]+/i);
+    if (!urlMatch) return escapeHtml(text);
+    const url = urlMatch[0].replace(/[.,)，）]+$/g, "");
+    const before = text.slice(0, urlMatch.index);
+    const after = text.slice((urlMatch.index || 0) + url.length);
+    const isYoutube = /(?:youtube\.com|youtu\.be)/i.test(url);
+    const isShopee = /(?:shopee\.[a-z.]+|shopee\.com)/i.test(url);
+    const brand = isYoutube ? "youtube" : isShopee ? "shopee" : "generic";
+    const label = isYoutube ? "▶" : isShopee ? "🛍" : "🔗";
+    const className = `qna-link qna-${brand}`;
+    const ariaLabel = isYoutube ? "打开 YouTube" : isShopee ? "打开 Shopee" : "点击打开链接";
+    return `${escapeHtml(before)} <a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="${ariaLabel}" title="${ariaLabel}">${label}</a>${escapeHtml(after)}`;
+  }
+
   function renderQna(items) {
     el.detailTitle.textContent = "QnA";
     el.listHint.textContent = `${items.length} 条`;
@@ -660,9 +676,9 @@
       const answerLines = (item.answers || []).join("\n").split(/\n|(?=【\d+】)/).map((line) => line.trim()).filter(Boolean);
       card.innerHTML = `
         <div class="qna-set">
-          <h3>${escapeHtml(item.question || "未填写问题")}</h3>
+          <h3>${qnaTextHtml(item.question || "未填写问题")}</h3>
           <div class="qna-answer-lines">
-            ${(answerLines.length ? answerLines : ["未填写答案"]).map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+            ${(answerLines.length ? answerLines : ["未填写答案"]).map((line) => `<p>${qnaTextHtml(line)}</p>`).join("")}
           </div>
         </div>
       `;

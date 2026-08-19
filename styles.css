@@ -689,8 +689,8 @@ select {
 
 .service-plan-row {
   display: grid;
-  grid-template-columns: 7rem 5.5rem minmax(10rem, 1fr) 7rem;
-  column-gap: 8px;
+  grid-template-columns: minmax(6.5rem, 7.5rem) minmax(5rem, 6.5rem) minmax(0, 1fr) minmax(7rem, 8rem);
+  column-gap: 6px;
   row-gap: 2px;
   align-items: center;
   min-width: 0;
@@ -771,7 +771,7 @@ select {
 
 .mileage-plan-row {
   display: grid;
-  grid-template-columns: 5.9rem 6.6rem minmax(8rem, 1fr) 5.75rem;
+  grid-template-columns: minmax(4.5rem, 5.9rem) minmax(5.5rem, 6.6rem) minmax(0, 1fr) minmax(5.2rem, 5.75rem);
   align-items: center;
   gap: var(--user-spacing);
   min-height: 42px;
@@ -785,7 +785,7 @@ select {
 .mileage-service { min-width: 0; overflow-wrap: anywhere; }
 .mileage-plan-row strong { text-align: right; white-space: nowrap; }
 .mileage-plan-row span {
-  min-width: 8rem;
+  min-width: 0;
   overflow: hidden;
   text-overflow: clip;
   white-space: nowrap;
@@ -810,9 +810,10 @@ select {
 }
 
 .service-car {
-  padding-right: 4px;
+  min-width: 0;
+  padding-right: 0;
   overflow: hidden;
-  text-overflow: clip;
+  text-overflow: ellipsis;
 }
 
 .service-date {
@@ -937,8 +938,8 @@ select {
   }
 
   .service-plan-row {
-    grid-template-columns: 5.1rem 4.4rem minmax(6.2rem, 1fr) 4.6rem;
-    column-gap: 6px;
+    grid-template-columns: 5.2rem 4.8rem minmax(0, 1fr) 5rem;
+    column-gap: 4px;
     row-gap: 2px;
     align-items: center;
     min-height: 38px;
@@ -965,16 +966,16 @@ select {
   }
 
   .service-car {
-    overflow: visible;
+    overflow: hidden;
     white-space: nowrap;
-    text-overflow: clip;
+    text-overflow: ellipsis;
   }
 
   .service-date-full { display: none; }
   .service-date-compact { display: inline; }
 
   .mileage-plan-row {
-    grid-template-columns: 4rem 5.8rem minmax(0, 1fr) 4.8rem;
+    grid-template-columns: 4rem 5.8rem minmax(0, 1fr) 5rem;
     gap: 6px;
     min-height: 42px;
     font-size: 0.76rem;
@@ -1004,14 +1005,14 @@ select {
   }
 
   .service-plan-row {
-    grid-template-columns: 7rem 5.5rem minmax(10rem, 1fr) 7rem;
-    column-gap: 8px;
+    grid-template-columns: minmax(7rem, 8rem) minmax(6rem, 7rem) minmax(0, 1fr) minmax(8rem, 9rem);
+    column-gap: 10px;
     min-height: 0;
     font-size: 0.84rem;
   }
 
   .mileage-plan-row {
-    grid-template-columns: 5.9rem 6.6rem minmax(8rem, 1fr) 5.75rem;
+    grid-template-columns: minmax(5.9rem, 7rem) minmax(6.6rem, 8rem) minmax(0, 1fr) minmax(6rem, 7rem);
     gap: var(--user-spacing);
     min-height: 42px;
     font-size: 1rem;
